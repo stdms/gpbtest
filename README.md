@@ -22,7 +22,7 @@ Different location of configuration file can be specified via LOGPARSERCONF envi
 
 Configuration file is a structure defined as a Perl hashref. Example follows:
 
-{
+`{
     database => {
         dsn             => 'dbi:Pg:dbname=gpbtest;host=127.0.0.1;port=5432',
         username        => 'postgres',
@@ -32,21 +32,21 @@ Configuration file is a structure defined as a Perl hashref. Example follows:
         }
     },
     commit_after => 1000
-}
+}`
 
 - database - section to defined connection parameters
   - dsn - data source locator in Perl DBI notation
   - username - database user name. The one created on step 'Database configuration' should be used
   - password - database access password
   - options - DBI driver options
-    - AutoCOmmit - disable per-line commits
+    - AutoCommit - disable per-line commits
 - commit_after - commit after this amount to input lines being read. 1 by default
 
 Further configuration parameters couls appear in future versions.
 
 = Parser exec =
 
-logparser.pl [ <logfile> ]
+`logparser.pl [ <logfile> ]`
 
 Script can be invoced manually of scheduled to run in crontab.
 
