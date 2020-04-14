@@ -1,0 +1,21 @@
+FROM perl:5.28
+
+EXPOSE 8080
+
+RUN groupadd -r gpbtest && useradd -M -r -g gpbtest gpbtest
+
+RUN cpanm DBI
+RUN cpanm DBD::Pg
+RUN cpanm Mojolicious
+
+WORKDIR /var/www/gpbtest
+RUN chown gpbtest /var/www/gpbtest
+
+COPY . /var/www/gpbtest
+
+USER gpbtest
+
+ENV PERL5LIB=/var/www/gpbtest/local/lib/perl5:/var/www/gpbtest/
+ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/var/www/gpbtest/local/bin
+
+CMD [ "/usr/local/bin/hypnotoad", "-f", "/var/www/gpbtest/gpbtest_app.pl" ]

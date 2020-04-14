@@ -1,0 +1,11 @@
+FROM postgres:latest
+
+RUN apt-get update
+
+ENV PGPORT=5433
+EXPOSE 5433
+
+RUN mkdir -p /docker-entrypoint-initdb.d
+RUN mkdir -p /scripts
+COPY ./01-initdb.sh /docker-entrypoint-initdb.d/
+COPY *.sql /scripts/

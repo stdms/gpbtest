@@ -52,3 +52,45 @@ Script can be invoced manually of scheduled to run in crontab.
 
 logfile - path to emails log file. If not specified stdin will be used.
 
+= Run in dicker =
+
+Docker based test environment configuration provided. To run test in docker use following commands
+
+`docker-compose build`
+`docker-compose up`
+
+THey'll build and connect to each other two docker containers. One with PostgreSQL database, second with
+log parser and WUI application.
+
+Initial database should be created during first db container start. If it doesn't happen one can apply db schema manually
+
+- list running containers
+
+`docker ps`
+`CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                    PORTS                              NAMES`
+`c8c10bc8bf47        gpbtest_web         "/usr/local/bin/hypn…"   6 minutes ago       Up 4 seconds              0.0.0.0:8080->8080/tcp             gpbtest_web_1`
+`b2f4adf9b494        gpbtest_db          "docker-entrypoint.s…"   41 minutes ago      Up 35 seconds (healthy)   5432/tcp, 0.0.0.0:5433->5433/tcp   gpbtest_db_1`
+
+
+- connect to db container
+
+`$ docker exec -it b2f4adf9b494 psql -U postgres gpbtest`
+`psql (12.2 (Debian 12.2-2.pgdg100+1))`
+`Type "help" for help.`
+`gpbtest=#`
+
+- init db schema
+
+`gpbtest=# \i scripts/schema.sql`
+
+
+- connect to web container
+
+`$ docker exec -it c8c10bc8bf47 /bin/bash`
+
+- parse reference maillog data
+
+`gpbtest@c8c10bc8bf47:/var/www/gpbtest$ ./logparser.pl maillog`
+
+
+Now we have data parsed and loaded into db table. Open WUI URL localhost:8080 in browser to perform search across data.

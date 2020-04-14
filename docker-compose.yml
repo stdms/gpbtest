@@ -1,0 +1,35 @@
+version: '2.1'
+
+networks:
+    gpbtest_net:
+        driver: bridge
+        name: gpbtest_net
+
+services:
+    db:
+        build:
+            context: ./
+            dockerfile: Dockerfile-db
+        image: gpbtest_db
+        ports:
+            - 5433:5433
+        networks:
+            - gpbtest_net
+        environment:
+            - POSTGRES_PASSWORD=postgres
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U postgres"]
+            timeout: 10s
+            retries: 10
+    web:
+        depends_on:
+            db:
+                condition: service_healthy
+        ports:
+            - 8080:8080
+        build:
+            context: ./
+            dockerfile: Dockerfile-web
+        image: gpbtest_web
+        networks:
+            - gpbtest_net
